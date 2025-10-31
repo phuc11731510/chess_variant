@@ -26,6 +26,16 @@ class Pawn(Piece):
     ở giai đoạn này (sẽ được xử lý bởi luật/board sau).
   """
 
+  def __init__(self, pos: Pos, color: Color) -> None:
+    """Khởi tạo quân Tốt với vị trí và màu sắc.
+
+    Tham số:
+    - pos: tọa độ hiện tại của quân (`Pos`).
+    - color: màu quân (`Color`).
+    """
+    self.pos = pos
+    self.color = color
+
   def legal_moves(self, board: Board) -> list[Move]:
     """Trả về các nước đi tiến thẳng 1 ô nếu còn trong biên bàn cờ.
 
@@ -43,4 +53,3 @@ class Pawn(Piece):
     if board.in_bounds(dst):
       moves.append(Move(self.pos, dst))
     return moves
-
