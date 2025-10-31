@@ -84,6 +84,21 @@ def pos_to_algebraic(pos: Pos, height: int, width: int) -> str:
   return f"{file_ch}{rank}"
 
 
+@dataclass(frozen=True)
+class Move:
+  """Nước đi cơ bản trong ván cờ.
+
+  Thuộc tính:
+  - src: ô xuất phát (`Pos`).
+  - dst: ô đích (`Pos`).
+  - promotion: mã quân phong cấp (ví dụ 'Q') hoặc None.
+  """
+
+  src: Pos
+  dst: Pos
+  promotion: str | None = None
+
+
 
 if __name__ == '__main__':
   print(pos_to_algebraic(Pos(5,3),10,10))
