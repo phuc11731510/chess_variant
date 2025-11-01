@@ -1,14 +1,14 @@
 from __future__ import annotations
 
 try:
-  from .core_types import Pos, algebraic_to_pos, pos_to_algebraic as _pos_to_alg
+  from .core_types import Pos, Color, algebraic_to_pos, pos_to_algebraic as _pos_to_alg
 except Exception:
   import sys
   from pathlib import Path
   SRC_DIR = Path(__file__).resolve().parents[2]
   if str(SRC_DIR) not in sys.path:
     sys.path.insert(0, str(SRC_DIR))
-  from chess_variant.domain.core_types import Pos, algebraic_to_pos, pos_to_algebraic as _pos_to_alg
+  from chess_variant.domain.core_types import Pos, Color, algebraic_to_pos, pos_to_algebraic as _pos_to_alg
 
 from typing import TYPE_CHECKING
 if TYPE_CHECKING:
@@ -23,8 +23,22 @@ class Square:
   - piece: quân cờ đứng trên ô (có thể không có).
   """
 
-  # Không định nghĩa phương thức để tuân thủ quy tắc “mỗi lần chỉ thêm ≤ 1 phương thức”.
-  pass
+  def __init__(self, pos: Pos) -> None:
+    """Khởi tạo ô với tọa độ `pos` và trạng thái trống (piece=None)."""
+    self.pos = pos
+    self.piece: 'Piece | None' = None
+
+  def __repr__(self) -> str:
+    """Chuỗi hiển thị ngắn của ô.
+
+    - Có quân: ủy quyền cho quân cờ tự cung cấp ký hiệu qua `Piece.symbol()`
+      để tuân thủ SOLID (trách nhiệm thuộc về lớp quân).
+    - Không có quân: in "..".
+    """
+    p = self.piece
+    if p is None:
+      return ".."
+    return p.symbol()
 
 
 class Board:
@@ -44,10 +58,7 @@ class Board:
     for x in range(self.height):
       row: list[Square] = []
       for y in range(self.width):
-        sq = Square()
-        sq.pos = Pos(x, y)
-        sq.piece = None
-        row.append(sq)
+        row.append(Square(Pos(x, y)))
       self.squares.append(row)
 
   def in_bounds(self, pos: Pos) -> bool:
@@ -73,6 +84,19 @@ class Board:
     """Đặt quân cờ vào ô tương ứng trong `squares`."""
     self.squares[piece.pos.x][piece.pos.y].piece = piece
 
+  def iter_pieces(self) -> 'list[Piece]':
+    """Trả về danh sách tất cả quân cờ đang có trên bàn.
+
+    Duyệt qua lưới `squares` và gom các `piece` khác None.
+    """
+    result: 'list[Piece]' = []
+    for x in range(self.height):
+      for y in range(self.width):
+        p = self.squares[x][y].piece
+        if p is not None:
+          result.append(p)
+    return result
+  
   def get(self, pos: Pos) -> 'Piece | None':
     """Trả về quân cờ tại ô `pos`, hoặc None nếu ô trống."""
     return self.squares[pos.x][pos.y].piece

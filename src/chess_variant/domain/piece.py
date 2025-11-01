@@ -36,3 +36,15 @@ class Piece(ABC):
       va chạm, và các ràng buộc luật khác).
     """
     raise NotImplementedError
+
+  def symbol(self) -> str:
+    """Trả về ký hiệu hiển thị: tiền tố màu + chữ cái quân (SOLID).
+
+    - Ủy quyền việc quyết định tiền tố màu cho `Color.to_prefix()`.
+    - Ký hiệu quân lấy chữ đầu tên lớp (viết hoa).
+    """
+    # Tránh phụ thuộc vòng: `Color` chỉ dùng ở type level, bản thân enum
+    # trên thực thể đã có phương thức `to_prefix`.
+    prefix = self.color.to_prefix()  # 'w' hoặc 'b'
+    letter = (type(self).__name__[:1] or '?').upper()
+    return prefix + letter

@@ -12,6 +12,14 @@ class Color(str, Enum):
 
   WHITE = 'W'
   BLACK = 'B'
+
+  def opponent(self) -> 'Color':
+    """Trả về màu đối phương (WHITE ↔ BLACK)."""
+    return Color.BLACK if self is Color.WHITE else Color.WHITE
+
+  def to_prefix(self) -> str:
+    """Trả về tiền tố hiển thị cho màu: 'w' hoặc 'b'."""
+    return 'w' if self is Color.WHITE else 'b'
   
 @dataclass(frozen=True)
 class Pos:
