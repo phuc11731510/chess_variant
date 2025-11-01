@@ -14,8 +14,17 @@ from typing import TYPE_CHECKING
 if TYPE_CHECKING:
   from .piece import Piece
 
-# Alias duy nhất cho lưới ô: ma trận Piece hoặc None
-Grid = list[list['Piece | None']]
+
+class Square:
+  """Ô vuông trên bàn cờ, tự quản lý tọa độ và quân cờ của mình.
+
+  Thuộc tính:
+  - pos: tọa độ `Pos` (x: hàng, y: cột).
+  - piece: quân cờ đứng trên ô (có thể không có).
+  """
+
+  # Không định nghĩa phương thức để tuân thủ quy tắc “mỗi lần chỉ thêm ≤ 1 phương thức”.
+  pass
 
 
 class Board:
@@ -30,8 +39,16 @@ class Board:
     """Khởi tạo bàn cờ với số hàng `height` và số cột `width`."""
     self.height = height
     self.width = width
-    # Ma trận 2 chiều (x: hàng, y: cột) lưu quân hoặc None
-    self.cells: 'Grid' = [[None for _ in range(self.width)] for _ in range(self.height)]
+    # Ma trận ô vuông, mỗi ô tự biết tọa độ của mình và chứa 0 hoặc 1 quân cờ
+    self.squares: list[list[Square]] = []
+    for x in range(self.height):
+      row: list[Square] = []
+      for y in range(self.width):
+        sq = Square()
+        sq.pos = Pos(x, y)
+        sq.piece = None
+        row.append(sq)
+      self.squares.append(row)
 
   def in_bounds(self, pos: Pos) -> bool:
     """Kiểm tra ô `pos` có nằm trong phạm vi bàn cờ.
@@ -49,15 +66,26 @@ class Board:
     return _pos_to_alg(pos, self.height, self.width)
 
   def is_empty(self, pos: Pos) -> bool:
-    """Cho biết ô `pos` có trống không dựa trên ma trận `cells`."""
-    return self.cells[pos.x][pos.y] is None
+    """Cho biết ô `pos` có trống không dựa trên `squares`."""
+    return self.squares[pos.x][pos.y].piece is None
 
   def place(self, piece: 'Piece') -> None:
-    """Đặt một quân cờ vào ô ứng với `piece.pos` trong `cells`.
+    """Đặt quân cờ vào ô tương ứng trong `squares`."""
+    self.squares[piece.pos.x][piece.pos.y].piece = piece
 
-    Phương thức này chỉ cập nhật lưu trữ nội bộ; các kiểm tra hợp lệ sẽ bổ sung sau.
-    """
-    self.cells[piece.pos.x][piece.pos.y] = piece
+  def get(self, pos: Pos) -> 'Piece | None':
+    """Trả về quân cờ tại ô `pos`, hoặc None nếu ô trống."""
+    return self.squares[pos.x][pos.y].piece
+
+  def remove(self, pos: Pos) -> None:
+    """Xóa quân cờ tại ô `pos` (nếu có), biến ô thành trống."""
+    self.squares[pos.x][pos.y].piece = None
+
+  def clear(self) -> None:
+    """Xóa toàn bộ quân cờ trên bàn, đưa tất cả ô về trạng thái trống."""
+    for x in range(self.height):
+      for y in range(self.width):
+        self.squares[x][y].piece = None
 
 
 if __name__ == '__main__':
