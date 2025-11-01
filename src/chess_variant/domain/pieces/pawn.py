@@ -26,30 +26,10 @@ class Pawn(Piece):
     ở giai đoạn này (sẽ được xử lý bởi luật/board sau).
   """
 
-  def __init__(self, pos: Pos, color: Color) -> None:
-    """Khởi tạo quân Tốt với vị trí và màu sắc.
-
-    Tham số:
-    - pos: tọa độ hiện tại của quân (`Pos`).
-    - color: màu quân (`Color`).
-    """
-    self.pos = pos
-    self.color = color
-
   def legal_moves(self, board: Board) -> list[Move]:
     """Trả về các nước đi tiến thẳng 1 ô nếu còn trong biên bàn cờ.
 
     - Kiểm tra biên bằng `board.in_bounds`.
     - Không kiểm tra va chạm/ô trống ở đây.
     """
-    if isinstance(self.color, Color):
-      dir_x = 1 if self.color.value == 'W' else -1
-    else:
-      dir_x = 1 if str(self.color) == 'W' else -1
-
-    dst = Pos(self.pos.x + dir_x, self.pos.y)
-
-    moves: list[Move] = []
-    if board.in_bounds(dst):
-      moves.append(Move(self.pos, dst))
-    return moves
+    pass

@@ -5,7 +5,7 @@ from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
   from .board import Board
-  from .core_types import Pos, Move
+  from .core_types import Pos, Move, Color
 
 
 class Piece(ABC):
@@ -16,6 +16,16 @@ class Piece(ABC):
   Xe, Tượng, Mã, Tốt, v.v.) sẽ kế thừa và hiện thực phương thức
   sinh nước đi tương ứng.
   """
+
+  def __init__(self, pos: 'Pos', color: 'Color') -> None:
+    """Khởi tạo quân cờ với vị trí và màu sắc.
+
+    Tham số:
+    - pos: tọa độ hiện tại của quân (`Pos`).
+    - color: màu quân (`Color`).
+    """
+    self.pos = pos
+    self.color = color
 
   @abstractmethod
   def legal_moves(self, board: Board) -> list[Move]:
