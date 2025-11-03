@@ -28,12 +28,8 @@ class Board:
 
   def get_size(self) -> tuple[int, int]:
     """Return the board size as (height, width)."""
-    pass
+    return (self.height, self.width)
 
   def is_in_bounds(self, x: int, y: int) -> bool:
     """Check whether coordinate (x, y) lies within the board bounds."""
-    pass
-
-  def clone(self) -> "Board":
-    """Create a shallow copy of this board instance."""
-    pass
+    return 0 <= x < self.height and 0 <= y < self.width
